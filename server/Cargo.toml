@@ -4,6 +4,7 @@ version = "0.0.1"
 edition = "2021"
 
 [dependencies]
+anyhow = "1.0"
 axum = { version = "0.6.18", features = ["ws", "headers", "tracing", "multipart", "macros"] }
+sqlx = { version = "0.6", features = ["sqlite","runtime-tokio-rustls"] }
 tokio = { version = "1.28.1", features = ["full"] }
-sqlx = { version = "0.6", features = [ "runtime-tokio-native-tls" , "postgres" ] }
