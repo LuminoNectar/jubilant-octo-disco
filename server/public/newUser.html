@@ -1,0 +1,30 @@
+<main>
+  <h1>Welcome New User!</h1>
+  <div>
+    <button onclick="generateUser()">Generate New User</button><br/>
+    <label hidden for="username" id="label-username">Username</label>
+    <input type="hidden" id="username"><br/>
+    <label hidden for="password" id="label-password">Password</label>
+    <input type="hidden" id="password"><br/>
+  </div>
+  <button onclick="window.location.href='/login'">Return Home</button>
+</main>
+
+<script>
+  function generateUser() {
+    fetch("/auth/register",{
+      method: 'POST'
+    }).then(
+      res => res.json()
+    ).then( res => {
+      let username = document.getElementById("username");
+      let password = document.getElementById("password");
+      username.value = res.id;
+      password.value = res.password;
+      document.getElementById("label-username").style.display = "inline";
+      document.getElementById("label-password").style.display = "inline";
+      username.type = "text";
+      password.type = "text";
+    });
+  }
+</script>

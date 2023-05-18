@@ -1,0 +1,32 @@
+<main>
+  <h1>Sign in</h1>
+  <form>
+    <label for="username">Username</label>
+    <input id="username" name="username" type="text" placeholder="fsadf789sfadfd"><br/>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" placeholder="Fdjskadf-fds!"><br/>
+    <button type="button" onclick="signIn(this.form)">Sign in</button>
+  </form>
+  <button onclick="window.location.href='/login'">Return Home</button>
+</main>
+
+<script>
+  function signIn(event) {
+    fetch("/auth/login",{
+      method: 'POST',
+      headers: {
+        'content-type':'application/json'
+      },
+      body: JSON.stringify({
+        id: event.username.value,
+        password: event.password.value
+      })
+    }).then(res => res.json()).then(res => {
+      //TODO add logic to actually route after successful signin
+      console.log(res);
+    }).catch(err => {
+      //TODO add logic for unsuccessful login (maybe tell them the password is for another user?)
+      console.log('error: ', err);
+    })
+  } 
+</script>
