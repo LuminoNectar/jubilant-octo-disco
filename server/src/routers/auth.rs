@@ -5,6 +5,7 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, SqlitePool};
+use uuid::Uuid;
 
 pub fn router(pool: &SqlitePool) -> Router {
     Router::new().nest(
@@ -27,10 +28,9 @@ pub async fn login(
 pub async fn register(
     State(pool): State<SqlitePool>,
 ) -> Result<impl IntoResponse, AppError> {
-    // TODO: replace with randomized user
     let user = User {
-        id: "1234567890abcdef".to_string(),
-        password: "password".to_string(),
+        id: Uuid::new_v4().to_string(),
+        password: Uuid::new_v4().to_string(),
     };
     let data: User = sqlx::query_as(
         r#"
@@ -43,8 +43,6 @@ pub async fn register(
     .bind(user.password)
     .fetch_one(&pool)
     .await?;
-
-    println!("{:?}", data);
 
     Ok((StatusCode::CREATED, Json(data)))
 }
