@@ -1,6 +1,8 @@
 use anyhow::Result;
-use axum::{routing::get, Router};
+use axum::{http::StatusCode, response::IntoResponse, routing::get, Router};
 use sqlx::{Executor, SqlitePool};
+
+mod routers;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -13,8 +15,8 @@ async fn main() -> Result<()> {
     pool.execute(
         r#"
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL
+            id       CHAR(16) PRIMARY KEY,
+            password VARCHAR(30) NOT NULL
         )
         "#,
     )
@@ -22,8 +24,8 @@ async fn main() -> Result<()> {
 
     // setup routes
     let app = Router::new()
-        .route("/", get(|| async { "Hello, World!" }))
-        .with_state(pool);
+        .route("/status", get(|| async { "it works!" }))
+        .merge(routers::auth::router(&pool));
 
     // start server
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
@@ -31,4 +33,25 @@ async fn main() -> Result<()> {
         .await?;
 
     Ok(())
+}
+
+pub struct AppError(anyhow::Error);
+
+impl<E> From<E> for AppError
+where
+    E: Into<anyhow::Error>,
+{
+    fn from(err: E) -> Self {
+        Self(err.into())
+    }
+}
+
+impl IntoResponse for AppError {
+    fn into_response(self) -> axum::response::Response {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            format!("Something went wrong: {}", self.0),
+        )
+            .into_response()
+    }
 }
