@@ -1,5 +1,10 @@
 use anyhow::Result;
-use axum::{http::StatusCode, response::{IntoResponse, Html}, routing::get, Router};
+use axum::{
+    http::StatusCode,
+    response::{Html, IntoResponse},
+    routing::get,
+    Router,
+};
 use sqlx::{Executor, SqlitePool};
 
 mod routers;
@@ -24,10 +29,19 @@ async fn main() -> Result<()> {
 
     // setup routes
     let app = Router::new()
-        .route("/status", get(|| async { "it works!" }))
-        .route("/login", get(|| async {Html(include_str!("../public/login.html"))}))
-        .route("/existingUser",get(|| async {Html(include_str!("../public/existingUser.html"))}))
-        .route("/newUser",get(|| async {Html(include_str!("../public/newUser.html"))}))
+        .route("/status", get(|| async { "it works! :)" }))
+        .route(
+            "/login",
+            get(|| async { Html(include_str!("../public/login.html")) }),
+        )
+        .route(
+            "/existingUser",
+            get(|| async { Html(include_str!("../public/existingUser.html")) }),
+        )
+        .route(
+            "/newUser",
+            get(|| async { Html(include_str!("../public/newUser.html")) }),
+        )
         .merge(routers::auth::router(&pool));
 
     // start server
