@@ -18,11 +18,35 @@ pub fn router(pool: &SqlitePool) -> Router {
 }
 
 pub async fn login(
-    State(_pool): State<SqlitePool>,
+    State(pool): State<SqlitePool>,
     Json(user): Json<User>,
-) -> impl IntoResponse {
-    // TODO: implement login
-    (StatusCode::CREATED, Json(user))
+) -> Result<impl IntoResponse, AppError> {
+    #[derive(sqlx::FromRow)]
+    struct Row {
+        count: i64,
+    }
+    #[derive(Serialize)]
+    struct ErrorMessage {
+        msg: &'static str,
+    }
+    let data: Row = sqlx::query_as(
+        r#"
+        SELECT COUNT(*) count FROM users 
+        WHERE id = ? AND password = ?
+        "#,
+    )
+    .bind(&user.id)
+    .bind(&user.password)
+    .fetch_one(&pool)
+    .await?;
+    if data.count > 0 {
+        Ok((StatusCode::OK, Json(user).into_response()))
+    } else {
+        Ok((
+            StatusCode::UNAUTHORIZED,
+            Json(ErrorMessage { msg: "Bad Login!" }).into_response(),
+        ))
+    }
 }
 
 pub async fn register(
