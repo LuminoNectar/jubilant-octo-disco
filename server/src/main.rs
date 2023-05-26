@@ -32,15 +32,45 @@ async fn main() -> Result<()> {
         .route("/status", get(|| async { "it works! :)" }))
         .route(
             "/login",
-            get(|| async { Html(include_str!("../public/login.html")) }),
+            get(|| async {
+                Html(include_str!("../public/loginPages/login.html"))
+            }),
         )
         .route(
             "/existingUser",
-            get(|| async { Html(include_str!("../public/existingUser.html")) }),
+            get(|| async {
+                Html(include_str!("../public/loginPages/existingUser.html"))
+            }),
         )
         .route(
             "/newUser",
-            get(|| async { Html(include_str!("../public/newUser.html")) }),
+            get(|| async {
+                Html(include_str!("../public/loginPages/newUser.html"))
+            }),
+        )
+        .route(
+            "/metrics",
+            get(|| async {
+                Html(include_str!("../public/mainPages/metrics.html"))
+            }),
+        )
+        .route(
+            "/history",
+            get(|| async {
+                Html(include_str!("../public/mainPages/history.html"))
+            }),
+        )
+        .route(
+            "/devices",
+            get(|| async {
+                Html(include_str!("../public/mainPages/devices.html"))
+            }),
+        )
+        .route(
+            "/account",
+            get(|| async {
+                Html(include_str!("../public/mainPages/account.html"))
+            }),
         )
         .merge(routers::auth::router(&pool));
 
