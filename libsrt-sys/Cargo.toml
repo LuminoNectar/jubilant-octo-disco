@@ -1,0 +1,10 @@
+[package]
+name = "libsrt-sys"
+version = "0.1.0"
+edition = "2021"
+links = "libsrt.a"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+bindgen = "0.65.1"
