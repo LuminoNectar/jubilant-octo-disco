@@ -16,7 +16,7 @@ async fn main() -> Result<(), Error> {
         }
         print!("\rSent {count:?} packets");
         sleep(Duration::from_millis(10)).await;
-        Some((Ok((Instant::now(), Bytes::from(vec![0; 8000]))), count + 1))
+        Some((Ok((Instant::now(), Bytes::from(std::format!("msg: {}", count)))), count + 1))
     })
     .boxed();
 
