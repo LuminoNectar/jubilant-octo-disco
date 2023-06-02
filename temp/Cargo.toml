@@ -10,5 +10,5 @@ bytes = "1.4.0"
 enum-as-inner = "=0.5.1"
 futures = "0.3.28"
 srt-tokio = { git = "https://github.com/russelltg/srt-rs" }
-tokio = "1.28.2"
+tokio = {version="1.28.2", features=["full"]}
 tokio-stream = "0.1.14"
